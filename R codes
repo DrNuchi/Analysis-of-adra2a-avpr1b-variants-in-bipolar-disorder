@@ -1,0 +1,1053 @@
+Supplementary T1 
+
+Numeric coding for SNP genotype
+
+CC = 1, CT = 2, TT = 3, AA = 4, AG = 5, GG = 6, AC = 7, CG = 8, GT = 9, np = 10, sl = 11, ll = 12, ss = 13, AT = 14
+
+
+Bayer Factor analysis using R
+
+install.packages("BayesFactor")
+install.packages("readxl")
+
+library(readxl)
+
+# Load the Excel file
+df <- read_excel("bayesian.xlsx")
+
+
+# Separate the stressor column and SNP columns
+stressor <- df[[1]]  # First column
+snp_data <- df[, 2:115]  # SNPs from column 2 to 115
+
+library(BayesFactor)
+
+#The ttestBF() function does not handle missing or infinite values (NA or NaN) in your data. To fix this, you need to remove any missing or infinite values from the group1 and group2 datasets before performing the Bayesian t-test.
+#The na.omit() function was used to remove missing values from group1 and group2 before running the test.
+
+#To avoid issues also, we need to add a check to ensure that the values in both groups have enough variability before performing the Bayesian t-test.
+
+compute_bayes_factor <- function(snp_column, stressor) {
+   # Subset SNP data based on stressor values (0 or 1)
+   group1 <- snp_column[stressor == 0]
+   group2 <- snp_column[stressor == 1]
+   
+   # Remove missing or infinite values from both groups
+   group1 <- na.omit(group1[is.finite(group1)])
+   group2 <- na.omit(group2[is.finite(group2)])
+   
+   # Check if both groups have more than 1 value and some variability
+   if(length(group1) > 1 && length(group2) > 1 && sd(group1) > 0 && sd(group2) > 0) {
+       # Perform Bayesian t-test
+       bf <- ttestBF(x = group1, y = group2)
+       return(bf)
+   } else {
+       return(NA)  # Return NA if no variability or insufficient data
+   }
+}
+
+# Loop over all SNP columns and compute Bayes Factor
+bayes_factors <- sapply(snp_data, compute_bayes_factor, stressor = stressor)
+
+# Print the Bayes Factors for each SNP
+bayes_factors
+
+RESULT
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+1. rs10868235
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1080159 ±0.15%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+2. rs1867283
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.248648 ±0.07%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+3. rs1147198
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1066946 ±0.16%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+4. rs11140800
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.104948 ±0.16%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+5. rs1187286
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1074653 ±0.16%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+6. rs11195419
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.11839 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+7. rs1800544
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1173859 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+8. rs3750625
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 1.44209 ±0.01%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+9. rs1800035
+[1] NA
+
+10. rs4792887
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1725583 ±0.1%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+11. rs12936511
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1275925 ±0.13%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+12. rs110402
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.3627743 ±0.05%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+13. rs16940665
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.2418879 ±0.07%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+14. rs300774
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1994696 ±0.09%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+15. SERT
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1184301 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+16. rs3805148
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1631853 ±0.1%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+17. rs6849474
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.3639655 ±0.05%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+18. rs6850524
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.2405053 ±0.07%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+19. rs1801260
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1529862 ±0.11%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+20. rs11932595
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1083909 ±0.15%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+21. rs1268271
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1200695 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+22. rs12649507
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1935661 ±0.09%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+23. rs4340844
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1838949 ±0.09%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+24. rs534654
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1270985 ±0.13%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+25. rs2291739
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1622306 ±0.1%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+26. rs2291738
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1209894 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+27. rs7302060
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1715114 ±0.1%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+28. rs10876890
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.2567486 ±0.07%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+29. rs11171856
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.2662141 ±0.07%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+30. rs2279665
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1431772 ±0.12%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+31. rs4146388
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1281079 ±0.13%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+32. rs10766075
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.3052152 ±0.06%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+33. rs4757142
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.2987416 ±0.06%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+34. rs7396943
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1068703 ±0.15%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+35. rs11824092
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1083217 ±0.15%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+36. rs7947951
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1206691 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+37. rs7937060
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1065582 ±0.15%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+38. rs1562438
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1071381 ±0.15%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+39. rs3816360
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1178615 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+40. rs7126303
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1077773 ±0.15%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+41. rs3789327
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1069345 ±0.15%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+42. rs11022778
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.128713 ±0.13%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+43. rs11600996
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1313471 ±0.13%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+44. rs11022779
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1075496 ±0.15%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+45. rs11022780
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.129156 ±0.13%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+46. rs7107287
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.13021 ±0.13%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+47. rs1982350
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1217161 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+48. rs1481892
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1842781 ±0.09%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+49. rs836755
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.109614 ±0.15%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+50. rs228727
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1139393 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+51. rs228682
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1308633 ±0.13%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+52. rs228642
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1415059 ±0.12%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+53. rs10864315
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1210661 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+54. rs4908694
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.2597732 ±0.07%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+55. rs2172563
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1084226 ±0.15%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+56. rs2640909
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1084708 ±0.15%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+57. rs10462021
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1943698 ±0.09%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+58. rs4980524
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1323001 ±0.12%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+59. rs2236647
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.2023874 ±0.08%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+60. rs2968909
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 4.588276 ±0%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+61. rs1360780
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1100494 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+62. rs755658
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.14331 ±0.11%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+63. rs9470080
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1241515 ±0.13%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+64. rs4713916
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1618046 ±0.1%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+65. rs7748266
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1183501 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+66. rs9296158
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1153017 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+67. rs9394309
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1102437 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+68. rs3800373
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.2121552 ±0.08%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+69. rs37972
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.3196583 ±0.05%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+70. rs881152
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1445081 ±0.11%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+71. rs706115
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.2353813 ±0.07%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+72. rs3104
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1140782 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+73. rs1406945
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.264988 ±0.06%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+74. rs41423247
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.3572571 ±0.05%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+75. rs6195
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.2032039 ±0.08%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+76. rs10052957
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1839884 ±0.09%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+77. rs6198
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1431043 ±0.11%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+78. rs6191
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1364588 ±0.12%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+79. rs258813
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1896623 ±0.09%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+80. rs6196
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1415448 ±0.11%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+81. rs33388
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1104772 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+82. rs28536160
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 3.056084 ±0.01%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+83. rs28373064
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.3083235 ±0.06%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+84. rs35369693
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1143162 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+85. rs28632197
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1591249 ±0.1%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+86. rs242937
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1381388 ±0.11%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+87. rs4076452
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1134864 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+88. rs242950
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1140895 ±0.14%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+89. rs878886
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.8466172 ±0.02%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+90. rs173365
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.1701271 ±0.09%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
+
+
+91. rs16940655
+Bayes factor analysis
+--------------
+[1] Alt., r=0.707 : 0.5919726 ±0.03%
+
+Against denominator:
+  Null, mu1-mu2 = 0 
+---
+Bayes factor type: BFindepSample, JZS
